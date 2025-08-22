@@ -1,0 +1,56 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Libft.hpp                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kahoumou <kahoumou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/22 15:15:11 by kahoumou          #+#    #+#             */
+/*   Updated: 2025/08/22 18:22:56 by kahoumou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef LIBFT_HPP
+# define LIBFT_HPP
+
+# include <cctype>
+# include <iostream>
+# include <string>
+#include <vector>
+#include <sstream>
+#include <cctype>
+#define RESET "\033[0m"
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define CYAN "\033[36m"
+#define ORANGE "\033[33m"
+#define BOLD_CYAN "\033[1;36m"
+namespace StringUtils
+{
+std::string to_upper(const std::string &str);
+std::string to_lower(const std::string &str);
+bool	starts_with(const std::string &str, const std::string &prefix);
+bool	ends_with(const std::string &str, const std::string &suffix);
+std::vector<std::string> split(const std::string& str, char delimiter);
+std::string trim(const std::string& str);
+std::string join(const std::vector<std::string>& parts, char delimiter);
+std::string join_numbers(const std::vector<int>& numbers, char delimiter);
+std::string replace(const std::string& str, const std::string& from, const std::string& to);
+std::string trim_all(const std::string& str);
+std::string remove_chars(const std::string& str, char c);
+} // namespace StringUtils
+
+namespace MathUtils
+{
+	int     abs(int n);
+	long    abs(long n);
+	float   abs(float n);
+	double  abs(double n);
+   
+    template <typename T>
+	T min(const T& a, const T& b);
+    template <typename T>
+	T max(const T& a, const T& b);
+}
+
+#endif
