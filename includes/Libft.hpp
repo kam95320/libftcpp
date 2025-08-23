@@ -6,7 +6,7 @@
 /*   By: kahoumou <kahoumou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 15:15:11 by kahoumou          #+#    #+#             */
-/*   Updated: 2025/08/22 18:22:56 by kahoumou         ###   ########.fr       */
+/*   Updated: 2025/08/23 12:32:42 by kahoumou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,43 +14,89 @@
 # define LIBFT_HPP
 
 # include <cctype>
+# include <cctype>
+// # include <cmath>
 # include <iostream>
+# include <sstream>
 # include <string>
-#include <vector>
-#include <sstream>
-#include <cctype>
-#define RESET "\033[0m"
-#define RED "\033[31m"
-#define GREEN "\033[32m"
-#define CYAN "\033[36m"
-#define ORANGE "\033[33m"
-#define BOLD_CYAN "\033[1;36m"
+# include <vector>
+# define RESET "\033[0m"
+# define RED "\033[31m"
+# define GREEN "\033[32m"
+# define CYAN "\033[36m"
+# define ORANGE "\033[33m"
+# define BOLD_CYAN "\033[1;36m"
 namespace StringUtils
 {
 std::string to_upper(const std::string &str);
 std::string to_lower(const std::string &str);
 bool	starts_with(const std::string &str, const std::string &prefix);
 bool	ends_with(const std::string &str, const std::string &suffix);
-std::vector<std::string> split(const std::string& str, char delimiter);
-std::string trim(const std::string& str);
-std::string join(const std::vector<std::string>& parts, char delimiter);
-std::string join_numbers(const std::vector<int>& numbers, char delimiter);
-std::string replace(const std::string& str, const std::string& from, const std::string& to);
-std::string trim_all(const std::string& str);
-std::string remove_chars(const std::string& str, char c);
+std::vector<std::string> split(const std::string &str, char delimiter);
+std::string trim(const std::string &str);
+std::string join(const std::vector<std::string> &parts, char delimiter);
+std::string join_numbers(const std::vector<int> &numbers, char delimiter);
+std::string replace(const std::string &str, const std::string &from,
+	const std::string &to);
+std::string trim_all(const std::string &str);
+std::string remove_chars(const std::string &str, char c);
 } // namespace StringUtils
 
 namespace MathUtils
 {
-	int     abs(int n);
-	long    abs(long n);
-	float   abs(float n);
-	double  abs(double n);
-   
-    template <typename T>
-	T min(const T& a, const T& b);
-    template <typename T>
-	T max(const T& a, const T& b);
+int		abs(int n);
+long	abs(long n);
+float	abs(float n);
+double	abs(double n);
+
+template <typename T> T min(const T &a, const T &b);
+template <typename T> T max(const T &a, const T &b);
+} // namespace MathUtils
+namespace MathUtils
+{
+int		sign(int n);
+long	sign(long n);
+float	sign(float n);
+double	sign(double n);
+} // namespace MathUtils
+namespace MathUtils
+{
+int		mod(int a, int b);
+long	mod(long a, long b);
+float	mod(float a, float b);
+double	mod(double a, double b);
+} // namespace MathUtils
+
+namespace MathUtils
+{
+	template <typename T> T 
+	pow(T base, int exponent);
 }
+
+namespace MathUtils
+{
+	bool is_even(int n);
+	bool is_odd(int n);
+}
+
+namespace MathUtils
+{
+	unsigned long long factorial(unsigned int n);
+}
+
+namespace MathUtils
+{
+	int gcd(int a, int b);
+	int lcm(int a, int b);
+}
+
+namespace MathUtils
+{
+	double sqrt(double x);
+}
+
+
+
+
 
 #endif
