@@ -6,7 +6,7 @@
 /*   By: kahoumou <kahoumou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 17:44:28 by kahoumou          #+#    #+#             */
-/*   Updated: 2025/08/23 12:34:02 by kahoumou         ###   ########.fr       */
+/*   Updated: 2025/08/23 15:33:01 by kahoumou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,6 +177,16 @@ double	mod(double a, double b)
 } // namespace MathUtils
 
 // pow =  calcule  de puissance (exponent)
+/*
+** pow(base, exponent)
+** Élève `base` à la puissance entière `exponent`.
+**
+** Si `exponent` est positif : multiplie `base` par lui-même `exponent` fois.
+** Si `exponent` est 0 : retourne 1 (convention mathématique).
+** Si `exponent` est négatif : retourne 1 / (base ^ |exponent|).
+**
+** Ne gère que les exposants entiers (positifs ou négatifs).
+*/
 
 template <typename T> T MathUtils::pow(T base, int exponent)
 {
@@ -285,6 +295,7 @@ int	lcm(int a, int b)
 	return ((a / gcd_val) * b);
 }
 } // namespace MathUtils
+
 /*
 But de sqrt()
 La fonction sqrt (square root) retourne la racine carrée d’un nombre positif ou nul.
@@ -309,8 +320,171 @@ double	sqrt(double x)
 		guess = (guess + x / guess) / 2.0;
 	return (guess);
 }
+
 } // namespace MathUtils
 
+/*
+	La formule de Taylor permet d’approximer une fonction compliquée
+	par un polynôme plus simple, en utilisant ses dérivées.
+
+	Exemple avec f(x) = e^x autour de 0 :
+		e^x = 1 + x + x^2/2! + x^3/3! + ... + x^n/n! + ...
+
+	➤ En informatique et en ingénierie :
+		- On utilise ce développement pour calculer rapidement e^x,
+		sin(x), cos(x), log(1+x), etc.
+		- Les calculateurs et processeurs n’évaluent pas directement
+		ces fonctions : ils passent par ces approximations polynomiales.
+		- En pratique, on coupe la série après quelques termes pour
+		obtenir une valeur proche avec peu de calcul.
+
+	Exemple numérique :
+		Pour x = 1 :
+		e^1 ≈ 1 + 1 + 1/2 + 1/6 + 1/24 = 2.7083...
+		La vraie valeur est e ≈ 2.71828, donc l’approximation est
+		déjà très bonne avec seulement 5 termes.
+*/
+
+double MathUtils::exp(double x)
+{
+	const int		max_iterations = 50;
+	const double	epsilon = 1e-10;
+	double			result;
+	double			term;
+
+	result = 1.0;
+	term = 1.0;
+	for (int i = 1; i < max_iterations; ++i)
+	{
+		term *= x / i;
+		result += term;
+		if (term < epsilon && term > -epsilon)
+			break ;
+	}
+	return (result);
+}
+
+/*
+** log(x)
+** Calcule le logarithme népérien (ln) de x,
+	c'est-à-dire le logarithme en base e.
+**
+** Implémenté sans <cmath> :
+**  - Réduction de x autour de 1 en utilisant la constante e ≈ 2.71828.
+**  - Utilise la série de Taylor de ln((x - 1)/(x + 1)) pour plus de précision.
+**
+** Lance une exception std::domain_error si x ≤ 0.
+**
+** Attention : précision limitée car implémenté sans bibliothèque mathématique.
+*/
+
+double MathUtils::log(double x)
+{
+	const double	e = 2.718281828459;
+	int				k;
+	double			y;
+	double			y2;
+	double			term;
+	double			result;
+
+	if (x <= 0.0)
+		throw std::domain_error("MathUtils::log(x): x must be > 0");
+	k = 0;
+	while (x > 2.0)
+	{
+		x /= e;
+		++k;
+	}
+	while (x < 0.5)
+	{
+		x *= e;
+		--k;
+	}
+	y = (x - 1) / (x + 1);
+	y2 = y * y;
+	term = y;
+	result = 0.0;
+	for (int n = 1; n < 20; n += 2)
+	{
+		result += term / n;
+		term *= y2;
+	}
+	result *= 2.0;
+	return (result + k);
+}
+
+/*
+** floor
+** ---------------------------------------------
+** Retourne le plus grand entier inférieur ou égal à x.
+**
+** Cette fonction tronque la partie décimale d’un double
+** vers le bas, même pour les nombres négatifs :
+** - floor(4.7)    → 4
+** - floor(-4.7)   → -5
+** - floor(3.0)    → 3
+** - floor(-3.0)   → -3
+**
+** Implémentée sans utiliser <cmath> pour une compatibilité
+** totale avec le standard C++98.
+*/
+
+int MathUtils::floor(double x)
+{
+	int	result;
+
+	result = static_cast<int>(x);
+	if (x < 0.0 && x != result)
+		return (result - 1);
+	return (result);
+}
+
+/*
+** ceil
+** ---------------------------------------------
+** Retourne le plus petit entier supérieur ou égal à x.
+**
+** Cette fonction arrondit vers le haut, même pour les nombres
+** négatifs :
+** - ceil(4.3)    → 5
+** - ceil(-4.3)   → -4
+** - ceil(3.0)    → 3
+** - ceil(-3.0)   → -3
+**
+** Implémentée sans utiliser <cmath> pour rester conforme
+** au standard C++98.
+*/
+
+int MathUtils::ceil(double x)
+{
+	int	int_part;
+
+	int_part = static_cast<int>(x);
+	if (x > 0.0 && x != static_cast<double>(int_part))
+		return (int_part + 1);
+	return (int_part);
+}
+/**
+ * Retourne l'entier le plus proche de la valeur donnée.
+ * - Si la partie décimale est ≥ 0.5, la valeur est arrondie vers le haut.
+ * - Sinon, elle est arrondie vers le bas.
+ *
+ * Exemple :
+ *   round(3.2)   → 3
+ *   round(3.7)   → 4
+ *   round(-3.2)  → -3
+ *   round(-3.7)  → -4
+ *
+ * Cette implémentation fonctionne sans <cmath>, compatible C++98.
+ */
+
+int MathUtils::round(double x)
+{
+	if (x >= 0.0)
+		return (static_cast<int>(x + 0.5));
+	else
+		return (static_cast<int>(x - 0.5));
+}
 int	main(void)
 {
 	std::cout << "=== TEST ABS ===" << std::endl;
@@ -383,5 +557,64 @@ int	main(void)
 	std::cout << "sqrt(2) = " << MathUtils::sqrt(2) << "\n";
 	std::cout << "sqrt(0) = " << MathUtils::sqrt(0) << "\n";
 	std::cout << "sqrt(-1) = " << MathUtils::sqrt(-1) << "\n";
+	std::cout << BOLD_CYAN << "\n=== TEST EXP ===\n" << RESET;
+	std::cout << "exp(1) ≈ " << MathUtils::exp(1.0) << " (attendu ≈ 2.718...)\n";
+	std::cout << "exp(0) ≈ " << MathUtils::exp(0.0) << " (attendu = 1)\n";
+	std::cout << "exp(-1) ≈ " << MathUtils::exp(-1.0) << " (attendu ≈ 0.367...)\n";
+	std::cout << BOLD_CYAN << "\n=== TEST POW ===\n" << RESET;
+	try
+	{
+		std::cout << "pow(2, 3)    = " << MathUtils::pow(2.0, 3) << "\n";
+		// 8.0
+		std::cout << "pow(5, 0)    = " << MathUtils::pow(5.0, 0) << "\n";
+		// 1.0
+		std::cout << "pow(2.0, -2) = " << MathUtils::pow(2.0, -2) << "\n";
+		// 0.25
+		std::cout << "pow(3.5, 2)  = " << MathUtils::pow(3.5, 2) << "\n";
+		// 12.25
+		std::cout << "pow(10, 1)   = " << MathUtils::pow(10.0, 1) << "\n";
+		// 10.0
+		std::cout << "pow(0, 5)    = " << MathUtils::pow(0.0, 5) << "\n";
+		// 0.0
+		std::cout << "pow(0, 0)    = " << MathUtils::pow(0.0, 0) << "\n";
+		// 1.0 (convention)
+		std::cout << "pow(2, -3)   = " << MathUtils::pow(2.0, -3) << "\n";
+		// 0.125
+	}
+	catch (const std::exception &e)
+	{
+		std::cerr << RED << "Erreur : " << e.what() << RESET << std::endl;
+	}
+	std::cout << BOLD_CYAN << "\n=== TEST LOG ===\n" << RESET;
+	try
+	{
+		std::cout << "log(1.0)   = " << MathUtils::log(1.0) << "\n";
+		// ≈ 0
+		std::cout << "log(e)     = " << MathUtils::log(2.718281828459) << "\n";
+		// ≈ 1
+		std::cout << "log(10.0)  = " << MathUtils::log(10.0) << "\n";
+		std::cout << "log(0.5)   = " << MathUtils::log(0.5) << "\n";
+	}
+	catch (const std::exception &e)
+	{
+		std::cerr << RED << "Erreur : " << e.what() << RESET << std::endl;
+	}
+	std::cout << BOLD_CYAN << "\n=== TEST FLOOR ===\n" << RESET;
+	std::cout << "floor(4.7)    = " << MathUtils::floor(4.7) << "\n";
+	std::cout << "floor(-4.7)   = " << MathUtils::floor(-4.7) << "\n";
+	std::cout << "floor(3.0)    = " << MathUtils::floor(3.0) << "\n";
+	std::cout << "floor(-3.0)   = " << MathUtils::floor(-3.0) << "\n";
+	std::cout << "floor(0.0)    = " << MathUtils::floor(0.0) << "\n";
+	std::cout << BOLD_CYAN << "\n=== TEST CEIL ===\n" << RESET;
+	std::cout << "ceil(4.3)   = " << MathUtils::ceil(4.3) << "\n";
+	std::cout << "ceil(-4.3)  = " << MathUtils::ceil(-4.3) << "\n";
+	std::cout << "ceil(3.0)   = " << MathUtils::ceil(3.0) << "\n";
+	std::cout << "ceil(-3.0)  = " << MathUtils::ceil(-3.0) << "\n";
+	std::cout << BOLD_CYAN << "\n=== TEST ROUND ===\n" << RESET;
+	std::cout << "round(3.2)   = " << MathUtils::round(3.2) << "\n";  // 3
+	std::cout << "round(3.7)   = " << MathUtils::round(3.7) << "\n";  // 4
+	std::cout << "round(-3.2)  = " << MathUtils::round(-3.2) << "\n"; // -3
+	std::cout << "round(-3.7)  = " << MathUtils::round(-3.7) << "\n"; // -4
+	std::cout << "round(0.0)   = " << MathUtils::round(0.0) << "\n";  // 0
 	return (0);
 }

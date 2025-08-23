@@ -6,7 +6,7 @@
 /*   By: kahoumou <kahoumou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 16:48:59 by kahoumou          #+#    #+#             */
-/*   Updated: 2025/08/22 17:15:16 by kahoumou         ###   ########.fr       */
+/*   Updated: 2025/08/23 15:32:37 by kahoumou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,7 @@ std::string StringUtils::join(const std::vector<std::string> &parts,
 	}
 	return (result);
 }
+
 std::string StringUtils::join_numbers(const std::vector<int> &numbers,
 	char delimiter)
 {
@@ -173,6 +174,7 @@ std::string StringUtils::join_numbers(const std::vector<int> &numbers,
 	}
 	return (oss.str());
 }
+
 
 int	main(void)
 {
