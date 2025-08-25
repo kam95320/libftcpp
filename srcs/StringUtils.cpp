@@ -6,7 +6,7 @@
 /*   By: kahoumou <kahoumou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 16:48:59 by kahoumou          #+#    #+#             */
-/*   Updated: 2025/08/23 15:32:37 by kahoumou         ###   ########.fr       */
+/*   Updated: 2025/08/25 16:52:53 by kahoumou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,58 +96,6 @@ std::string StringUtils:: remove_chars(const std::string &str, char c)
 	return (result);
 }
 
-namespace StringUtils
-{
-bool	starts_with(const std::string &str, const std::string &prefix)
-{
-	if (prefix.length() > str.length())
-		return (false);
-	for (std::size_t i = 0; i < prefix.length(); ++i)
-	{
-		if (str[i] != prefix[i])
-			return (false);
-	}
-	return (true);
-}
-
-bool	ends_with(const std::string &str, const std::string &suffix)
-{
-	if (suffix.length() > str.length())
-		return (false);
-	std::size_t offset = str.length() - suffix.length();
-	for (std::size_t i = 0; i < suffix.length(); ++i)
-	{
-		if (str[offset + i] != suffix[i])
-			return (false);
-	}
-	return (true);
-}
-} // namespace StringUtils
-
-std::vector<std::string> StringUtils ::split(const std::string &str,
-	char delimiter)
-{
-	std::vector<std::string> result;
-	std::string current;
-	for (std::size_t i = 0; i < str.length(); ++i)
-	{
-		if (str[i] == delimiter)
-		{
-			if (!current.empty())
-			{
-				result.push_back(trim(current));
-				current.clear();
-			}
-		}
-		else
-		{
-			current += str[i];
-		}
-	}
-	if (!current.empty())
-		result.push_back(trim(current));
-	return (result);
-}
 
 std::string StringUtils::join(const std::vector<std::string> &parts,
 	char delimiter)
@@ -179,7 +127,6 @@ std::string StringUtils::join_numbers(const std::vector<int> &numbers,
 int	main(void)
 {
 	std::string s = "libft est solide";
-	std::string to_split = "je,teste,la,split,fonction";
 	std::vector<std::string> to_join;
 	std::vector<int> scores;
 	std::string phrase = "je mange du pain, pain et encore du pain";
@@ -192,17 +139,6 @@ int	main(void)
 	std::cout << BOLD_CYAN << "\n=== TESTS LIBFT++ ===\n\n" << RESET;
 	std::cout << CYAN << "[TO_UPPER]      " << RESET << StringUtils::to_upper(s) << "\n";
 	std::cout << CYAN << "[TO_LOWER]      " << RESET << StringUtils::to_lower(s) << "\n";
-	std::cout << CYAN << "[STARTS_WITH]   " << RESET << (StringUtils::starts_with(s,
-			"lib") ? GREEN "true" : RED "false") << RESET << "\n";
-	std::cout << CYAN << "[ENDS_WITH]     " << RESET << (StringUtils::ends_with(s,
-			"solide") ? GREEN "true" : RED "false") << RESET << "\n";
-	std::cout << BOLD_CYAN << "\n=== TEST SPLIT ===\n" << RESET;
-	std::vector<std::string> tokens = StringUtils::split(to_split, ',');
-	for (std::size_t i = 0; i < tokens.size(); ++i)
-		std::cout << "[" << i << "] " << tokens[i] << "\n";
-	to_join.push_back("lib");
-	to_join.push_back("ft");
-	to_join.push_back("plus");
 	std::cout << BOLD_CYAN << "\n=== TEST JOIN ===\n" << RESET;
 	std::string result = StringUtils::join(to_join, '_');
 	std::cout << result << "\n";

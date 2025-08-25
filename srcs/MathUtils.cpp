@@ -6,7 +6,7 @@
 /*   By: kahoumou <kahoumou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 17:44:28 by kahoumou          #+#    #+#             */
-/*   Updated: 2025/08/23 15:33:01 by kahoumou         ###   ########.fr       */
+/*   Updated: 2025/08/25 17:55:24 by kahoumou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -485,6 +485,20 @@ int MathUtils::round(double x)
 	else
 		return (static_cast<int>(x - 0.5));
 }
+
+/**
+ * Vérifie si une chaîne est composée uniquement de caractères alphanumériques (lettres ou chiffres).
+ *
+ * @param str La chaîne à tester.
+ * @return true si tous les caractères sont alphanumériques et que la chaîne n'est pas vide,
+ *         false sinon.
+ *
+ * Utile pour vérifier des identifiants, des noms de variables ou toute entrée ne devant contenir
+ * que des lettres et des chiffres.
+ */
+
+
+
 int	main(void)
 {
 	std::cout << "=== TEST ABS ===" << std::endl;

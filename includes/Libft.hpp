@@ -6,7 +6,7 @@
 /*   By: kahoumou <kahoumou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 15:15:11 by kahoumou          #+#    #+#             */
-/*   Updated: 2025/08/23 15:30:44 by kahoumou         ###   ########.fr       */
+/*   Updated: 2025/08/25 18:17:02 by kahoumou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,6 @@ namespace StringUtils
 {
 std::string to_upper(const std::string &str);
 std::string to_lower(const std::string &str);
-bool				starts_with(const std::string &str,
-						const std::string &prefix);
-bool				ends_with(const std::string &str,
-						const std::string &suffix);
 std::vector<std::string> split(const std::string &str, char delimiter);
 std::string trim(const std::string &str);
 std::string join(const std::vector<std::string> &parts, char delimiter);
@@ -42,6 +38,25 @@ std::string replace(const std::string &str, const std::string &from,
 std::string trim_all(const std::string &str);
 std::string remove_chars(const std::string &str, char c);
 } // namespace StringUtils
+
+namespace parsing
+{
+std::vector<std::string> split(const std::string &str, char delimiter);
+bool				starts_with(const std::string &str,
+						const std::string &prefix);
+bool				ends_with(const std::string &str,
+						const std::string &suffix);
+int					count_words(const std::string &str, char delimiter);
+bool				is_numeric(const std::string &str);
+bool 				is_alpha(const std::string& str);
+bool 				is_alnum(const std::string& str);
+bool 				is_ascii(const std::string& str);
+bool 				is_printable(const std::string& str);
+bool 				contains_any(const std::string& str, const std::string& charset);
+bool  				contains_only(const std::string& str, const std::string& charset);
+
+
+} // namespace parsing
 
 namespace MathUtils
 {
