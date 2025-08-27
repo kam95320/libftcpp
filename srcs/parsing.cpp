@@ -6,11 +6,11 @@
 /*   By: kahoumou <kahoumou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 16:34:40 by kahoumou          #+#    #+#             */
-/*   Updated: 2025/08/25 18:16:29 by kahoumou         ###   ########.fr       */
+/*   Updated: 2025/08/27 13:47:00 by kahoumou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/Libft.hpp"
+#include "../includes/Libft.hpp"
 
 /**
  * @brief Découpe une chaîne de caractères en un vecteur de sous-chaînes.
@@ -280,6 +280,104 @@ bool parsing :: contains_only(const std::string& str, const std::string& charset
 	}
 	return true;
 }
+/**
+ * @brief Supprime les guillemets doubles (") ou simples (') autour d'une chaîne.
+ * 
+ * Exemple :
+ *    strip_quotes("\"hello\"") → "hello"
+ *    strip_quotes("'world'")  → "world"
+ *    strip_quotes("42")       → "42" (inchangé)
+ * 
+ * Si la chaîne ne commence et ne termine pas par le même type de guillemet, elle est retournée telle quelle.
+ */
+
+std::string parsing::strip_all_quotes(const std::string& str)
+{
+	std::string result;
+	for (std::string::const_iterator it = str.begin(); it != str.end(); ++it)
+	{
+		if (*it != '"' && *it != '\'')
+			result += *it;
+	}
+	return result;
+}
+
+/**
+ * Extrait et retourne la sous-chaîne située entre deux délimiteurs donnés.
+ *
+ * Exemple :
+ *   extract_between("Bonjour [42] Paris", "[", "]") => "42"
+ *   extract_between("Hello <world>!", "<", ">")     => "world"
+ *   extract_between("no match", "{", "}")           => ""
+ *
+ * Si les délimiteurs ne sont pas trouvés, retourne une chaîne vide.
+ */
+
+std::string parsing::extract_between(const std::string& str, const std::string& start, const std::string& end)
+{
+	std::size_t start_pos = str.find(start);
+	if (start_pos == std::string::npos)
+		return "";
+
+	start_pos += start.length();
+
+	std::size_t end_pos = str.find(end, start_pos);
+	if (end_pos == std::string::npos)
+		return "";
+
+	return str.substr(start_pos, end_pos - start_pos);
+}
+
+/**
+ * Découpe une chaîne `str` en mots (tokens) séparés par le caractère `delimiter`.
+ * Ignore les délimiteurs vides successifs.
+ *
+ * Exemples :
+ * tokenize("Hello world!")            → ["Hello", "world!"]
+ * tokenize("42,,Paris,,Lyon", ',')   → ["42", "Paris", "Lyon"]
+ */
+
+ std::vector<std::string> parsing::tokenize(const std::string& str, char delimiter)
+	{
+		std::vector<std::string> tokens;
+		std::string token;
+		std::istringstream stream(str);
+
+		while (std::getline(stream, token, delimiter))
+		{
+			if (!token.empty())
+				tokens.push_back(token);
+		}
+		return tokens;
+	}
+
+/**
+ * Découpe la chaîne `str` en tokens en utilisant les caractères contenus
+ * dans `delimiters` comme séparateurs.
+ * Ignore les séparateurs vides successifs.
+ *
+ * Exemples :
+ * tokenize("Hello, world! How are you?", " ,!?") → ["Hello", "world", "How", "are", "you"]
+ * tokenize("42;Paris|Lyon", ";|")               → ["42", "Paris", "Lyon"]
+ */
+
+	std::vector<std::string> parsing::tokenize_extreme(const std::string& str, const std::string& delimiters)
+	{
+		std::vector<std::string> tokens;
+		std::size_t start = str.find_first_not_of(delimiters);
+		std::size_t end;
+
+		while (start != std::string::npos)
+		{
+			end = str.find_first_of(delimiters, start);
+			tokens.push_back(str.substr(start, end - start));
+			start = str.find_first_not_of(delimiters, end);
+		}
+		return tokens;
+	}
+
+	
+
 
 
 
@@ -364,7 +462,58 @@ int	main(void)
 	std::cout << "contains_only(\"abc\", \"abcd\")       = " << (parsing::contains_only("abc", "abcd") ? "true" : "false") << "\n";
 	std::cout << "contains_only(\"abcx\", \"abc\")       = " << (parsing::contains_only("abcx", "abc") ? "true" : "false") << "\n";
 	std::cout << "contains_only(\"\", \"abc\")           = " << (parsing::contains_only("", "abc") ? "true" : "false") << "\n";
+	
+	std::cout << BOLD_CYAN << "\n=== TEST STRIP_ALL_QUOTES ===\n" << RESET;
 
+	std::string test1_a = "\"Hello\"";
+	std::string test2_b = "'World'";
+	std::string test3_c = "\"'42'\"";
+	std::string test4_d = "no_quotes";
+	std::string test5_e = "'mis\"matched'";
 
-	return (0);
+	std::cout << "strip_all_quotes(\"" << test1_a << "\") = " << parsing::strip_all_quotes(test1_a) << "\n";
+	std::cout << "strip_all_quotes(\"" << test2_b << "\") = " << parsing::strip_all_quotes(test2_b) << "\n";
+	std::cout << "strip_all_quotes(\"" << test3_c << "\") = " << parsing::strip_all_quotes(test3_c) << "\n";
+	std::cout << "strip_all_quotes(\"" << test4_d << "\") = " << parsing::strip_all_quotes(test4_d) << "\n";
+	std::cout << "strip_all_quotes(\"" << test5_e << "\") = " << parsing::strip_all_quotes(test5_e) << "\n";
+	
+	std::cout << BOLD_CYAN << "\n=== TEST EXTRACT_BETWEEN ===\n" << RESET;
+		
+		std::cout << "extract_between(\"Bonjour [42] Paris\", \"[\", \"]\") = "
+          << "\"" << parsing::extract_between("Bonjour [42] Paris", "[", "]") << "\"" << std::endl;
+		std::cout << "extract_between(\"<tag>value</tag>\", \"<\", \">\") = "
+          << "\"" << parsing::extract_between("<tag>value</tag>", "<", ">") << "\"" << std::endl;
+		std::cout << "extract_between(\"(1 + 2) = 3\", \"(\", \")\") = "
+          << "\"" << parsing::extract_between("(1 + 2) = 3", "(", ")") << "\"" << std::endl;
+		std::cout << "extract_between(\"{missing end\", \"{\", \"}\") = "
+          << "\"" << parsing::extract_between("{missing end", "{", "}") << "\"" << std::endl;
+		  
+		  std::cout << BOLD_CYAN << "\n=== TEST TOKENIZE ===\n" << RESET;
+
+		std::vector<std::string> tokens1 = parsing::tokenize("This is a test");
+		std::cout << "tokenize(\"This is a test\") = ";
+		for (std::size_t i = 0; i < tokens1.size(); ++i)
+				std::cout << "[" << tokens1[i] << "] ";
+					std::cout << "\n";
+
+		std::vector<std::string> tokens2 = parsing::tokenize("42,,Paris,,Lyon", ',');
+		std::cout << "tokenize(\"42,,Paris,,Lyon\", ',') = ";
+		for (std::size_t i = 0; i < tokens2.size(); ++i)
+				std::cout << "[" << tokens2[i] << "] ";
+					std::cout << "\n";
+
+	std::cout << BOLD_CYAN << "\n=== TEST TOKENIZE_extreme (version avancée) ===\n" << RESET;
+
+	std::vector<std::string> tokens1_a = parsing::tokenize_extreme("Hello, world! How are you?", " ,!?");
+	std::cout << "tokenize_extreme(\"Hello, world! How are you?\", \" ,!?\") = ";
+	for (std::size_t i = 0; i < tokens1.size(); ++i)
+			std::cout << "[" << tokens1[i] << "] ";
+				std::cout << "\n";
+
+		std::vector<std::string> tokens2_b = parsing::tokenize_extreme("42;Paris|Lyon", ";|");
+		std::cout << "tokenize(\"42;Paris|Lyon\", \";|\") = ";
+		for (std::size_t i = 0; i < tokens2.size(); ++i)
+				std::cout << "[" << tokens2[i] << "] ";
+					std::cout << "\n";
+	return(0);	
 }
